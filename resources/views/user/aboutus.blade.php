@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <h2 class="text-2xl text-center bg-gray-200 font-bold text-green-900 py-4">About Us</h2>
+    <h2 class="text-5xl font-bold text-gray-800 mb-4 text-center">About <span class="text-emerald-600">Aakash Gym Supplements</span></h2>
     <div class="flex flex-col sm:flex-row items-center mb-12">
         <div class="sm:w-1/2 p-4">
             <img src="{{ asset('clientimage/aboutus.jpg') }}" alt="About Us" class="w-full h-auto rounded shadow-lg">
@@ -11,7 +11,7 @@
             <div class="text">
                 <span class="text-gray-500 border-b-2 border-green-600 uppercase">About Us</span>
                 <h2 class="my-4 text-3xl font-bold sm:text-4xl">
-                    About <span class="text-green-600">Aakash Gym Supplement</span>
+                    About <span class="text-emerald-600">Aakash Gym Supplements</span>
                 </h2>
                 <p class="text-gray-700">
                     Welcome to Aakash Gym Supplement, your go-to platform for high-quality gym supplements and fitness products. Our mission is to help fitness enthusiasts achieve their goals with premium supplements. We aim to provide a seamless shopping experience with a wide range of products designed to enhance your fitness journey.
