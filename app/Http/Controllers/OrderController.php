@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Type\Decimal;
@@ -22,6 +23,22 @@ class OrderController extends Controller
         $cart_items = Cart::where('user_id', $user_id)->where('visible', '1')->get();
         $cart_ids = $cart_items->pluck('id')->toArray();
         
+        // Prepare order items data
+        $order_items = [];
+        foreach ($cart_items as $cart_item) {
+            $product = Product::find($cart_item->product_id);
+            if ($product) {
+                $order_items[] = [
+                    'product_id' => $product->id,
+                    'product_name' => $product->name,
+                    'product_sku' => $product->sku ?? '',
+                    'quantity' => $cart_item->quantity,
+                    'unit_price' => $product->price,
+                    'total_price' => $product->price * $cart_item->quantity,
+                    'cart_id' => $cart_item->id
+                ];
+            }
+        }
 
         // Validate the request data
         $data = $request->validate([
@@ -29,14 +46,29 @@ class OrderController extends Controller
             'total_amount' => 'required',
         ]);
 
-      
-
         $data['user_id'] = $user_id;
         $data['cart_ids'] = json_encode($cart_ids);
+        $data['order_items'] = json_encode($order_items);
         $data['status'] = 'pending';
         $data['payment_status'] = 'pending';
         $data['payment_method'] = $request->payment_method;
         $data['total_amount'] = $request->total_amount;
+        
+        // Add required address fields (using user's info as default)
+        $user = auth()->user();
+        $default_address = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone ?? '',
+            'address' => $user->address ?? '',
+            'city' => $user->city ?? '',
+            'state' => $user->state ?? '',
+            'postal_code' => $user->postal_code ?? '',
+            'country' => $user->country ?? 'Nepal'
+        ];
+        
+        $data['shipping_address'] = json_encode($default_address);
+        $data['billing_address'] = json_encode($default_address);
      
        
         $data['order_date'] = now();
@@ -46,7 +78,13 @@ class OrderController extends Controller
 
 
         if ($data['payment_method'] == 'cod') {
-            $data['status'] = 'completed';
+            $data['status'] = 'pending';  // COD orders start as pending
+            
+            // Generate unique order number if not exists
+            if (empty($data['order_number'])) {
+                $data['order_number'] = Order::generateOrderNumber();
+            }
+            
             $od = Order::create($data);
 
             $cart_ids = json_decode($od->cart_ids);
@@ -55,22 +93,25 @@ class OrderController extends Controller
                     $cart = Cart::find($cart_id);
                     
                     if ($cart) {
-                        $cart->visible = 0;
+                        $cart->visible = 0;  // Hide from cart but don't mark as paid yet
                         $cart->save();
-                        
-                        $product = Product::find($cart->product_id);
-                        if ($product) {
-                            $stock = $product->stock - $cart->quantity;
-                            if ($stock < 0) {
-                                $stock = 0;
-                            }
-                            $product->stock = $stock;
-                            $product->save();
-                        }
                     }
                 }
             }
-            return redirect()->route('user.orderhistory')->with('success', 'Order placed successfully');
+
+            // Create payment record for COD
+            $paymentData = [
+                'order_id' => $od->id,
+                'user_id' => $od->user_id,
+                'transaction_id' => 'COD-' . $od->order_number,
+                'amount' => $od->total_amount,
+                'payment_method' => 'cod',
+                'payment_status' => 'pending',
+            ];
+
+            Payment::create($paymentData);
+
+            return redirect()->route('user.orderhistory')->with('success', 'COD order placed successfully');
 
         } else {
             // Store order data in session instead of creating order immediately

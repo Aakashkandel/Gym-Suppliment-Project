@@ -102,16 +102,6 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-4 border-l-4 border-purple-400">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-purple-600 text-sm font-medium">Shipped</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $shippedOrders }}</p>
-                    </div>
-                    <i class="bx bx-package text-purple-500 text-xl"></i>
-                </div>
-            </div>
-
             <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-400">
                 <div class="flex items-center justify-between">
                     <div>

@@ -71,8 +71,8 @@
                         </a>
                     </li>
                     <li class="hover:bg-blue-900">
-                        <a href="{{route('admin.product.index')}}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-200 hover:text-gray-100">
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-200"><i class='bx bx-package'></i></span>
+                        <a href="{{ route('admin.products.enhanced') }}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-200 hover:text-gray-100">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-200"><i class="bx bx-package"></i></span>
                             <span class="text-sm font-medium">Products</span>
                         </a>
                     </li>
@@ -89,12 +89,6 @@
                         </a>
                     </li>
                     <li class="hover:bg-blue-900">
-                        <a href="{{route('admin.user')}}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-200 hover:text-gray-100">
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-200"><i class="bx bx-user"></i></span>
-                            <span class="text-sm font-medium">Users</span>
-                        </a>
-                    </li>
-                    <li class="hover:bg-blue-900">
                         <a href="{{ route('admin.customers.index') }}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-200 hover:text-gray-100">
                             <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-200"><i class="bx bx-users"></i></span>
                             <span class="text-sm font-medium">Customers</span>
@@ -104,12 +98,6 @@
                         <a href="{{ route('admin.stock.index') }}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-200 hover:text-gray-100">
                             <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-200"><i class="bx bx-box"></i></span>
                             <span class="text-sm font-medium">Stock</span>
-                        </a>
-                    </li>
-                    <li class="hover:bg-blue-900">
-                        <a href="{{ route('admin.products.enhanced') }}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-200 hover:text-gray-100">
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-200"><i class="bx bx-package"></i></span>
-                            <span class="text-sm font-medium">Enhanced Products</span>
                         </a>
                     </li>
                     <li class="hover:bg-blue-900">

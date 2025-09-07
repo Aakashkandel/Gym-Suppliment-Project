@@ -1,7 +1,78 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #4e73df, #224abe);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(45deg, #1cc88a, #13855c);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(45deg, #f6c23e, #dda20a);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(45deg, #e74a3b, #c0392b);
+}
+
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    border: none;
+}
+
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.modal-xl {
+    max-width: 1200px;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+</style>
 <div class="container-fluid px-6 py-4">
+    <!-- Success/Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Header Section -->
     <div class="mb-8">
         <div class="flex items-center justify-between">
@@ -355,80 +426,149 @@
                                     </div>
                                     
                                     <div class="mb-3">
+                                        <label for="title" class="form-label fw-bold">Product Title *</label>
+                                        <input type="text" class="form-control" id="title" name="title" required 
+                                               placeholder="Enter product title">
+                                        <div class="form-text">This will be used as the display title</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
                                         <label for="sku" class="form-label fw-bold">SKU</label>
                                         <input type="text" class="form-control" id="sku" name="sku" 
                                                placeholder="Auto-generated if left empty">
                                         <div class="form-text">Leave empty for auto-generation</div>
                                     </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="category_id" class="form-label fw-bold">Category *</label>
+                                        <select class="form-select" id="category_id" name="category_id" required>
+                                            <option value="">Select Category</option>
+                                            @foreach($categories ?? [] as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea class="form-control" id="description" name="description" rows="4" 
+                                                  placeholder="Enter product description"></textarea>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="category_id" class="form-label">Category *</label>
-                                    <select class="form-select" id="category_id" name="category_id" required>
-                                        <option value="">Select Category</option>
-                                        @foreach($categories ?? [] as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="stock" class="form-label">Stock Quantity *</label>
-                                    <input type="number" class="form-control" id="stock" name="stock" min="0" required>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
                             </div>
                         </div>
                         
-                        <!-- Pricing & Features -->
+                        <!-- Pricing & Stock -->
                         <div class="col-md-6">
-                            <h6 class="text-primary mb-3"><i class="fas fa-rupee-sign"></i> Pricing & Features</h6>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="price" class="form-label">Regular Price *</label>
-                                    <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="text-primary mb-0">
+                                        <i class="fas fa-rupee-sign me-2"></i>Pricing & Stock
+                                    </h6>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="discount_price" class="form-label">Discount Price</label>
-                                    <input type="number" class="form-control" id="discount_price" name="discount_price" step="0.01" min="0">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="price" class="form-label fw-bold">Regular Price *</label>
+                                            <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required
+                                                   placeholder="0.00">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="discount_price" class="form-label">Discount Price</label>
+                                            <input type="number" class="form-control" id="discount_price" name="discount_price" step="0.01" min="0"
+                                                   placeholder="0.00">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="stock" class="form-label fw-bold">Stock Quantity *</label>
+                                            <input type="number" class="form-control" id="stock" name="stock" min="0" required
+                                                   placeholder="0">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="min_stock_level" class="form-label">Min Stock Alert</label>
+                                            <input type="number" class="form-control" id="min_stock_level" name="min_stock_level" min="0" value="10"
+                                                   placeholder="10">
+                                            <div class="form-text">Alert when stock goes below this level</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Product Status</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" value="1">
+                                            <label class="form-check-label" for="is_featured">Featured Product</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
+                                            <label class="form-check-label" for="is_active">Active</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="min_stock_level" class="form-label">Min Stock Level</label>
-                                    <input type="number" class="form-control" id="min_stock_level" name="min_stock_level" min="0" value="10">
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Details Section -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="text-primary mb-0">
+                                        <i class="fas fa-cogs me-2"></i>Additional Details
+                                    </h6>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="weight" class="form-label">Weight (kg)</label>
-                                    <input type="number" class="form-control" id="weight" name="weight" step="0.01" min="0">
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="dimensions" class="form-label">Dimensions (L x W x H)</label>
-                                <input type="text" class="form-control" id="dimensions" name="dimensions" placeholder="e.g., 10 x 5 x 15 cm">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Product Features</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" value="1">
-                                    <label class="form-check-label" for="is_featured">Featured Product</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="is_bestseller" name="is_bestseller" value="1">
-                                    <label class="form-check-label" for="is_bestseller">Best Seller</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
-                                    <label class="form-check-label" for="is_active">Active</label>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="weight" class="form-label">Weight</label>
+                                            <input type="text" class="form-control" id="weight" name="weight" 
+                                                   placeholder="e.g., 2kg, 500g">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="dimensions" class="form-label">Dimensions</label>
+                                            <input type="text" class="form-control" id="dimensions" name="dimensions" 
+                                                   placeholder="e.g., 15x10x8 cm">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="ingredients" class="form-label">Ingredients</label>
+                                        <textarea class="form-control" id="ingredients" name="ingredients" rows="3" 
+                                                  placeholder="List the product ingredients"></textarea>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="flavors" class="form-label">Available Flavors</label>
+                                            <input type="text" class="form-control" id="flavors" name="flavors" 
+                                                   placeholder="Vanilla, Chocolate, Strawberry (comma separated)">
+                                            <div class="form-text">Separate multiple flavors with commas</div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="sizes" class="form-label">Available Sizes</label>
+                                            <input type="text" class="form-control" id="sizes" name="sizes" 
+                                                   placeholder="1kg, 2kg, 5kg (comma separated)">
+                                            <div class="form-text">Separate multiple sizes with commas</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="tags" class="form-label">Tags</label>
+                                        <input type="text" class="form-control" id="tags" name="tags" 
+                                               placeholder="protein, fitness, muscle, gain (comma separated)">
+                                        <div class="form-text">Tags help with search and categorization</div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="is_bestseller" name="is_bestseller" value="1">
+                                                <label class="form-check-label" for="is_bestseller">Best Seller</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -437,58 +577,20 @@
                     <!-- Images Section -->
                     <div class="row mt-4">
                         <div class="col-12">
-                            <h6 class="text-primary mb-3"><i class="fas fa-images"></i> Product Images</h6>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="image" class="form-label">Main Image</label>
-                                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                                    <div class="form-text">Recommended size: 800x800px</div>
-                                    <div id="imagePreview" class="mt-2"></div>
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="text-primary mb-0">
+                                        <i class="fas fa-images me-2"></i>Product Image
+                                    </h6>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="additional_images" class="form-label">Additional Images</label>
-                                    <input type="file" class="form-control" id="additional_images" name="additional_images[]" accept="image/*" multiple>
-                                    <div class="form-text">You can select multiple images</div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="image" class="form-label">Product Image</label>
+                                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                        <div class="form-text">Recommended size: 800x800px. Leave empty to use default image.</div>
+                                        <div id="imagePreview" class="mt-2"></div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Product Variants -->
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <h6 class="text-primary mb-3"><i class="fas fa-palette"></i> Flavors & Sizes</h6>
-                            
-                            <div class="mb-3">
-                                <label for="flavors" class="form-label">Available Flavors</label>
-                                <input type="text" class="form-control" id="flavors" name="flavors" 
-                                       placeholder="e.g., Chocolate, Vanilla, Strawberry">
-                                <div class="form-text">Separate multiple flavors with commas</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="sizes" class="form-label">Available Sizes</label>
-                                <input type="text" class="form-control" id="sizes" name="sizes" 
-                                       placeholder="e.g., 1kg, 2kg, 5kg">
-                                <div class="form-text">Separate multiple sizes with commas</div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <h6 class="text-primary mb-3"><i class="fas fa-list"></i> Tags & Ingredients</h6>
-                            
-                            <div class="mb-3">
-                                <label for="tags" class="form-label">Tags</label>
-                                <input type="text" class="form-control" id="tags" name="tags" 
-                                       placeholder="e.g., protein, muscle building, post-workout">
-                                <div class="form-text">Separate multiple tags with commas</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="ingredients" class="form-label">Ingredients</label>
-                                <textarea class="form-control" id="ingredients" name="ingredients" rows="3"
-                                          placeholder="List all ingredients and their quantities..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -642,6 +744,9 @@ function editProduct(id) {
     $('#addProductModalLabel').html('<i class="fas fa-edit me-2"></i>Edit Product');
     $('#productForm').attr('action', `{{ url('/products') }}/${id}/update`);
     
+    // Add method field for PUT request
+    $('#productForm').append('<input type="hidden" name="_method" value="PUT">');
+    
     // Show modal first
     $('#addProductModal').modal('show');
     
@@ -734,6 +839,7 @@ function editProduct(id) {
         try {
             // Populate basic fields
             $('#name').val(product.name || '');
+            $('#title').val(product.title || product.name || ''); // Use name as fallback for title
             $('#sku').val(product.sku || '');
             $('#description').val(product.description || '');
             $('#price').val(product.price || '');
@@ -811,11 +917,30 @@ function editProduct(id) {
 }
 
 function deleteProduct(id) {
-    // Show confirmation dialog
-    if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-        return;
+    // Use SweetAlert if available, otherwise use confirm
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                performDelete(id);
+            }
+        });
+    } else {
+        // Fallback to browser confirm
+        if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+            performDelete(id);
+        }
     }
-    
+}
+
+function performDelete(id) {
     // Show loading state
     const deleteBtn = document.querySelector(`button[onclick="deleteProduct(${id})"]`);
     const originalText = deleteBtn.innerHTML;
@@ -840,16 +965,28 @@ function deleteProduct(id) {
     })
     .then(data => {
         if (data.success) {
-            // Show success message and reload
-            alert(data.message || 'Product deleted successfully');
-            window.location.reload();
+            // Show success message
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Deleted!', data.message || 'Product deleted successfully', 'success')
+                    .then(() => window.location.reload());
+            } else {
+                alert(data.message || 'Product deleted successfully');
+                window.location.reload();
+            }
         } else {
             throw new Error(data.message || 'Error deleting product');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error deleting product: ' + error.message);
+        
+        // Show error message
+        if (typeof Swal !== 'undefined') {
+            Swal.fire('Error!', 'Error deleting product: ' + error.message, 'error');
+        } else {
+            alert('Error deleting product: ' + error.message);
+        }
+        
         // Restore button state
         deleteBtn.innerHTML = originalText;
         deleteBtn.disabled = false;
@@ -923,6 +1060,12 @@ $(document).ready(function() {
             isValid = false;
         }
         
+        if (!$('#title').val().trim()) {
+            alert('Product title is required');
+            $('#title').focus();
+            isValid = false;
+        }
+        
         if (!$('#price').val() || parseFloat($('#price').val()) <= 0) {
             alert('Valid price is required');
             $('#price').focus();
@@ -938,6 +1081,47 @@ $(document).ready(function() {
         if (!$('#stock').val() || parseInt($('#stock').val()) < 0) {
             alert('Valid stock quantity is required');
             $('#stock').focus();
+            isValid = false;
+        }
+        
+        // Validate discount price if provided
+        const discountPrice = parseFloat($('#discount_price').val() || 0);
+        const regularPrice = parseFloat($('#price').val() || 0);
+        
+        if (discountPrice > 0 && discountPrice >= regularPrice) {
+            alert('Discount price must be less than regular price');
+            $('#discount_price').focus();
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Show loading state
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
+        
+        // Allow form to submit normally
+        // The loading state will be reset by page refresh or modal close
+    });
+    
+    // Auto-calculate and display discount percentage
+    $('#price, #discount_price').on('input', function() {
+        const price = parseFloat($('#price').val() || 0);
+        const discountPrice = parseFloat($('#discount_price').val() || 0);
+        
+        if (price > 0 && discountPrice > 0 && discountPrice < price) {
+            const discountPercent = ((price - discountPrice) / price * 100).toFixed(1);
+            $('#discount_price').closest('.mb-3').find('.form-text').remove();
+            $('#discount_price').after(`<div class="form-text text-success">Save ${discountPercent}%</div>`);
+        } else {
+            $('#discount_price').closest('.mb-3').find('.form-text').remove();
+        }
+    });
+});
             isValid = false;
         }
         
@@ -972,133 +1156,264 @@ $(document).ready(function() {
 });
 </script>
 
-<style>
-.bg-gradient-primary {
-    background: linear-gradient(45deg, #4e73df, #224abe);
+<!-- SweetAlert2 for better user experience -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Make functions globally accessible by attaching to window object
+window.resetToAddMode = function() {
+    console.log('Reset to add mode called');
+    
+    if (typeof $ === 'undefined') {
+        console.error('jQuery not loaded');
+        return;
+    }
+    
+    try {
+        // Reset form
+        $('#productForm')[0].reset();
+        $('#productForm input[name="_method"]').remove();
+        $('#addProductModalLabel').html('<i class="fas fa-plus me-2"></i>Add New Product');
+        $('#productForm').attr('action', '{{ route("admin.products.store") }}');
+        
+        // Remove any loading overlays or alerts
+        $('#loading-overlay').remove();
+        $('.alert').remove();
+        $('#imagePreview').empty();
+        
+        console.log('Form reset to add mode');
+    } catch (error) {
+        console.error('Error in resetToAddMode:', error);
+    }
+};
+
+window.editProduct = function(id) {
+    console.log('Edit product called for ID:', id);
+    
+    // Check if jQuery is loaded
+    if (typeof $ === 'undefined') {
+        alert('jQuery is not loaded. Please refresh the page.');
+        return;
+    }
+    
+    // Check if modal exists
+    if (!document.getElementById('addProductModal')) {
+        alert('Product form modal not found. Please refresh the page.');
+        return;
+    }
+    
+    try {
+        // Reset form and modal
+        $('#productForm')[0].reset();
+        $('#productForm input[name="_method"]').remove();
+        
+        // Change modal title and form action
+        $('#addProductModalLabel').html('<i class="fas fa-edit me-2"></i>Edit Product');
+        $('#productForm').attr('action', `{{ url('/products') }}/${id}/update`);
+        
+        // Add method field for PUT request
+        $('#productForm').append('<input type="hidden" name="_method" value="PUT">');
+        
+        // Show modal
+        $('#addProductModal').modal('show');
+        
+        // Add loading indicator
+        const formContainer = $('#addProductModal .modal-body');
+        const loadingHtml = '<div id="loading-overlay" class="text-center p-4"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><br><small class="text-muted mt-2">Loading product data...</small></div>';
+        formContainer.prepend(loadingHtml);
+        
+        // Fetch product data
+        fetch(`{{ url('/products') }}/${id}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(product => {
+            // Remove loading indicator
+            $('#loading-overlay').remove();
+            
+            // Populate form fields
+            $('#name').val(product.name || '');
+            $('#title').val(product.title || product.name || '');
+            $('#sku').val(product.sku || '');
+            $('#description').val(product.description || '');
+            $('#price').val(product.price || '');
+            $('#discount_price').val(product.discount_price || '');
+            $('#category_id').val(product.category_id || '');
+            $('#stock').val(product.stock || '');
+            $('#min_stock_level').val(product.min_stock_level || '');
+            $('#weight').val(product.weight || '');
+            $('#dimensions').val(product.dimensions || '');
+            $('#ingredients').val(product.ingredients || '');
+            
+            // Handle JSON fields
+            const jsonFields = ['flavors', 'sizes', 'tags'];
+            jsonFields.forEach(field => {
+                if (product[field]) {
+                    let value = product[field];
+                    if (typeof value === 'string') {
+                        try {
+                            value = JSON.parse(value);
+                        } catch (e) {
+                            value = value.split(',').map(item => item.trim());
+                        }
+                    }
+                    if (Array.isArray(value)) {
+                        $(`#${field}`).val(value.join(', '));
+                    } else {
+                        $(`#${field}`).val(value);
+                    }
+                }
+            });
+            
+            // Handle checkboxes
+            $('#is_featured').prop('checked', Boolean(product.is_featured));
+            $('#is_bestseller').prop('checked', Boolean(product.is_bestseller));
+            $('#is_active').prop('checked', product.is_active !== false);
+            
+            console.log('Product data loaded successfully');
+        })
+        .catch(error => {
+            $('#loading-overlay').remove();
+            console.error('Error loading product:', error);
+            alert('Error loading product data. Please try again.');
+        });
+        
+    } catch (error) {
+        console.error('Error in editProduct:', error);
+        alert('Error opening edit form: ' + error.message);
+    }
+};
+
+window.deleteProduct = function(id) {
+    console.log('Delete product called for ID:', id);
+    
+    // Use SweetAlert2 if available, otherwise browser confirm
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                performDelete(id);
+            }
+        });
+    } else {
+        if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+            performDelete(id);
+        }
+    }
+};
+
+function performDelete(id) {
+    // Show loading state on delete button
+    const deleteBtn = document.querySelector(`button[onclick*="deleteProduct(${id})"]`);
+    if (deleteBtn) {
+        const originalHTML = deleteBtn.innerHTML;
+        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        deleteBtn.disabled = true;
+    }
+    
+    // Send DELETE request
+    fetch(`{{ url('/products') }}/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Deleted!', data.message || 'Product deleted successfully', 'success')
+                    .then(() => window.location.reload());
+            } else {
+                alert(data.message || 'Product deleted successfully');
+                window.location.reload();
+            }
+        } else {
+            throw new Error(data.message || 'Error deleting product');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire('Error!', 'Error deleting product: ' + error.message, 'error');
+        } else {
+            alert('Error deleting product: ' + error.message);
+        }
+        
+        // Restore button state
+        if (deleteBtn) {
+            deleteBtn.innerHTML = originalHTML;
+            deleteBtn.disabled = false;
+        }
+    });
 }
 
-.bg-gradient-success {
-    background: linear-gradient(45deg, #1cc88a, #13855c);
-}
+window.viewProduct = function(id) {
+    console.log('View product called for ID:', id);
+    
+    if (typeof $ === 'undefined') {
+        alert('jQuery is not loaded. Please refresh the page.');
+        return;
+    }
+    
+    $('#viewProductModal').modal('show');
+    $('#viewProductContent').html('<div class="text-center p-4"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Loading...</div>');
+    
+    fetch(`{{ url('/products') }}/${id}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(product => {
+        const content = `
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="${product.image ? '/images/' + product.image : '/images/default-product.jpg'}" 
+                         class="img-fluid rounded" alt="${product.name}">
+                </div>
+                <div class="col-md-8">
+                    <h4>${product.name}</h4>
+                    <p><strong>SKU:</strong> ${product.sku || 'N/A'}</p>
+                    <p><strong>Price:</strong> Rs. ${product.price}</p>
+                    ${product.discount_price ? `<p><strong>Discount Price:</strong> Rs. ${product.discount_price}</p>` : ''}
+                    <p><strong>Stock:</strong> ${product.stock}</p>
+                    <p><strong>Category:</strong> ${product.category ? product.category.name : 'N/A'}</p>
+                    <p><strong>Description:</strong> ${product.description || 'No description'}</p>
+                </div>
+            </div>
+        `;
+        $('#viewProductContent').html(content);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        $('#viewProductContent').html('<div class="alert alert-danger">Error loading product details</div>');
+    });
+};
 
-.bg-gradient-warning {
-    background: linear-gradient(45deg, #f6c23e, #dda20a);
-}
+// Test functions on page load
+console.log('Product management functions loaded');
+console.log('editProduct function:', typeof window.editProduct);
+console.log('deleteProduct function:', typeof window.deleteProduct);
+console.log('viewProduct function:', typeof window.viewProduct);
+</script>
 
-.bg-gradient-danger {
-    background: linear-gradient(45deg, #e74a3b, #c0392b);
-}
-
-.product-image-wrapper {
-    position: relative;
-}
-
-.product-image-wrapper img {
-    border-radius: 8px;
-    transition: transform 0.2s ease;
-}
-
-.product-image-wrapper img:hover {
-    transform: scale(1.1);
-}
-
-.card {
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    border: none;
-}
-
-.card-header {
-    border-bottom: 1px solid rgba(0,0,0,.125);
-}
-
-.badge {
-    font-size: 0.75em;
-    font-weight: 500;
-}
-
-.btn-group .btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-}
-
-.modal-xl {
-    max-width: 1200px;
-}
-
-.form-text {
-    font-size: 0.875em;
-    color: #6c757d;
-}
-
-.table th {
-    font-weight: 600;
-    font-size: 0.9rem;
-    border-bottom: 2px solid #dee2e6;
-}
-
-.table td {
-    vertical-align: middle;
-    font-size: 0.9rem;
-}
-
-.table-hover tbody tr:hover {
-    background-color: rgba(78, 115, 223, 0.05);
-}
-
-.form-control:focus {
-    border-color: #4e73df;
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-}
-
-.form-select:focus {
-    border-color: #4e73df;
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-}
-
-.btn-primary {
-    background-color: #4e73df;
-    border-color: #4e73df;
-}
-
-.btn-primary:hover {
-    background-color: #224abe;
-    border-color: #224abe;
-}
-
-.text-primary {
-    color: #4e73df !important;
-}
-
-.pagination .page-link {
-    color: #4e73df;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #4e73df;
-    border-color: #4e73df;
-}
-
-.input-group-text {
-    background-color: #f8f9fc;
-    border-color: #d1d3e2;
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.card-header.bg-gradient-primary {
-    border-bottom: none;
-}
-
-.table td {
-    vertical-align: middle;
-    font-size: 0.9rem;
-}
-</style>
 @endsection

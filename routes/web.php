@@ -52,6 +52,7 @@ Route::middleware(['auth', 'isadmin', 'verified'])->group(function () {
     Route::get('/order/accept/{id}', [AdminController::class, 'acceptorder'])->name('admin.order.accept');
     Route::get('/order/reject/{id}', [AdminController::class, 'rejectorder'])->name('admin.order.reject');
     Route::post('/order/status/{id}', [AdminController::class, 'updateOrderStatus'])->name('admin.order.status');
+    Route::post('/order/payment-status/{id}', [AdminController::class, 'updatePaymentStatus'])->name('admin.order.payment-status');
     Route::get('/order/invoice/{id}', [AdminController::class, 'downloadInvoice'])->name('admin.order.invoice');
 
     // Payment management
@@ -127,6 +128,7 @@ Route::middleware(['auth', 'isuser', 'verified'])->group(function () {
     //payment routes    
     Route::get('/payment/esewa/success', [PaymentController::class, 'esewasuccess'])->name('esewa.success');
     Route::get('/payment/esewa/fail', [PaymentController::class, 'esewafail'])->name('esewa.fail');
+    Route::post('/payment/cod', [PaymentController::class, 'codPayment'])->name('payment.cod');
 
     //order history
     Route::get('/orderhistory',[OrderController::class,'history'])->name('user.orderhistory');

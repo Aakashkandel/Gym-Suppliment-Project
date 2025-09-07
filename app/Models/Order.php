@@ -11,22 +11,42 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
+        'order_number',
         'user_id', 
-        'cart_ids', 
+        'cart_ids',
+        'order_items',
         'status', 
-        'payment_method', 
-        'payment_status', 
-        'order_date',
+        'payment_status',
+        'payment_method',
+        'subtotal',
+        'tax_amount',
+        'shipping_amount',
+        'discount_amount',
         'total_amount',
-        'delivery_date',
+        'shipping_address',
+        'billing_address',
         'tracking_number',
-        'notes'
+        'courier_service',
+        'shipped_at',
+        'delivered_at',
+        'delivery_notes',
+        'order_date',
+        'internal_notes'
     ];
 
     protected $casts = [
         'cart_ids' => 'array',
+        'order_items' => 'array',
+        'shipping_address' => 'array',
+        'billing_address' => 'array',
         'order_date' => 'date',
-        'delivery_date' => 'datetime'
+        'shipped_at' => 'datetime',
+        'delivered_at' => 'datetime',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'shipping_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'total_amount' => 'decimal:2',
     ];
 
     public function user()
@@ -34,6 +54,9 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the payments for the order.
+     */
     public function payments()
     {
         return $this->hasMany(Payment::class);
@@ -162,9 +185,84 @@ class Order extends Model
      */
     public function getOrderDurationAttribute()
     {
-        if ($this->delivery_date) {
-            return $this->created_at->diffInDays($this->delivery_date);
+        if ($this->delivered_at) {
+            return $this->created_at->diffInDays($this->delivered_at);
         }
         return $this->created_at->diffInDays(now());
+    }
+
+    /**
+     * Get the latest payment for this order.
+     */
+    public function getLatestPaymentAttribute()
+    {
+        return $this->payments()->latest()->first();
+    }
+
+    /**
+     * Get total paid amount.
+     */
+    public function getTotalPaidAmountAttribute()
+    {
+        return $this->payments()->where('payment_status', 'completed')->sum('amount');
+    }
+
+    /**
+     * Check if order is fully paid.
+     */
+    public function getIsFullyPaidAttribute()
+    {
+        return $this->total_paid_amount >= $this->total_amount;
+    }
+
+    /**
+     * Get payment status based on payments.
+     */
+    public function getPaymentStatusAttribute()
+    {
+        if ($this->is_fully_paid) {
+            return 'paid';
+        }
+        
+        $latestPayment = $this->latest_payment;
+        if ($latestPayment) {
+            return $latestPayment->payment_status;
+        }
+        
+        return 'pending';
+    }
+
+    /**
+     * Get remaining amount to be paid.
+     */
+    public function getRemainingAmountAttribute()
+    {
+        return max(0, $this->total_amount - $this->total_paid_amount);
+    }
+
+    /**
+     * Generate a unique order number.
+     */
+    public static function generateOrderNumber()
+    {
+        do {
+            $orderNumber = 'ORD-' . date('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        } while (self::where('order_number', $orderNumber)->exists());
+
+        return $orderNumber;
+    }
+
+    /**
+     * Boot function to auto-generate order number.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            if (empty($order->order_number)) {
+                $order->order_number = self::generateOrderNumber();
+            }
+        });
     }
 }

@@ -11,8 +11,8 @@
             <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">All Orders</option>
                 <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
                 <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
             </select>
@@ -33,6 +33,15 @@
                 <i class="bx bx-time-five text-yellow-500 text-xl"></i>
             </div>
         </div>
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-indigo-600 text-sm font-medium">Confirmed</p>
+                    <p class="text-2xl font-bold text-indigo-700">{{ $orders->where('status', 'confirmed')->count() }}</p>
+                </div>
+                <i class="bx bx-check text-indigo-500 text-xl"></i>
+            </div>
+        </div>
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div class="flex items-center justify-between">
                 <div>
@@ -40,15 +49,6 @@
                     <p class="text-2xl font-bold text-blue-700">{{ $orders->where('status', 'processing')->count() }}</p>
                 </div>
                 <i class="bx bx-loader-alt text-blue-500 text-xl"></i>
-            </div>
-        </div>
-        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-600 text-sm font-medium">Shipped</p>
-                    <p class="text-2xl font-bold text-purple-700">{{ $orders->where('status', 'shipped')->count() }}</p>
-                </div>
-                <i class="bx bx-package text-purple-500 text-xl"></i>
             </div>
         </div>
         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -122,8 +122,8 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
                                 @if($order->status == 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($order->status == 'confirmed') bg-indigo-100 text-indigo-800
                                 @elseif($order->status == 'processing') bg-blue-100 text-blue-800
-                                @elseif($order->status == 'shipped') bg-purple-100 text-purple-800
                                 @elseif($order->status == 'delivered') bg-green-100 text-green-800
                                 @elseif($order->status == 'cancelled') bg-red-100 text-red-800
                                 @else bg-gray-100 text-gray-800 @endif">
@@ -131,14 +131,33 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                                @if($order->payment_status == 'pending') bg-yellow-100 text-yellow-800
-                                @elseif($order->payment_status == 'paid') bg-green-100 text-green-800
-                                @elseif($order->payment_status == 'failed') bg-red-100 text-red-800
-                                @elseif($order->payment_status == 'rejected') bg-red-100 text-red-800
-                                @else bg-gray-100 text-gray-800 @endif">
-                                {{ ucfirst($order->payment_status) }}
-                            </span>
+                            @if($order->payment_method == 'esewa' && $order->payment_status == 'paid')
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    Paid (eSewa)
+                                </span>
+                            @elseif($order->payment_method == 'cod')
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                        @if($order->payment_status == 'pending') bg-yellow-100 text-yellow-800
+                                        @elseif($order->payment_status == 'paid') bg-green-100 text-green-800
+                                        @else bg-gray-100 text-gray-800 @endif">
+                                        @if($order->payment_status == 'pending') Unpaid @else {{ ucfirst($order->payment_status) }} @endif
+                                    </span>
+                                    @if($order->payment_status == 'pending')
+                                        <select onchange="updatePaymentStatus({{ $order->id }}, this.value)" class="text-xs border border-gray-300 rounded px-1 py-1">
+                                            <option value="">Update Payment</option>
+                                            <option value="paid">Mark as Paid</option>
+                                        </select>
+                                    @endif
+                                </div>
+                            @else
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                    @if($order->payment_status == 'pending') bg-yellow-100 text-yellow-800
+                                    @elseif($order->payment_status == 'paid') bg-green-100 text-green-800
+                                    @else bg-gray-100 text-gray-800 @endif">
+                                    @if($order->payment_status == 'pending') Unpaid @else {{ ucfirst($order->payment_status) }} @endif
+                                </span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             Rs {{ number_format($order->total_amount, 2) }}
@@ -160,15 +179,15 @@
                                     <select onchange="updateOrderStatus({{ $order->id }}, this.value)" class="text-sm border border-gray-300 rounded px-2 py-1">
                                         <option value="">Update Status</option>
                                         @if($order->status == 'pending')
+                                            <option value="confirmed">Confirm Order</option>
+                                        @endif
+                                        @if($order->status == 'confirmed')
                                             <option value="processing">Mark as Processing</option>
                                         @endif
                                         @if($order->status == 'processing')
-                                            <option value="shipped">Mark as Shipped</option>
-                                        @endif
-                                        @if($order->status == 'shipped')
                                             <option value="delivered">Mark as Delivered</option>
                                         @endif
-                                        @if(in_array($order->status, ['pending', 'processing']))
+                                        @if(in_array($order->status, ['pending', 'confirmed', 'processing']))
                                             <option value="cancelled">Cancel Order</option>
                                         @endif
                                     </select>
@@ -268,6 +287,29 @@ function updateOrderStatus(orderId, status) {
         .then(data => {
             if (data.success) {
                 location.reload();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+// Update payment status
+function updatePaymentStatus(orderId, paymentStatus) {
+    if (paymentStatus) {
+        fetch(`/order/payment-status/${orderId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ payment_status: paymentStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error updating payment status: ' + data.message);
             }
         })
         .catch(error => console.error('Error:', error));

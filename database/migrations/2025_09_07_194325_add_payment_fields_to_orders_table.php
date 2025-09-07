@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('phone')->nullable()->after('email');
-            $table->timestamp('last_login_at')->nullable()->after('email_verified_at');
-            $table->json('notes')->nullable()->after('remember_token');
+        Schema::table('orders', function (Blueprint $table) {
+            //
         });
     }
 
@@ -27,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['phone', 'last_login_at', 'notes']);
+        Schema::table('orders', function (Blueprint $table) {
+            //
         });
     }
 };

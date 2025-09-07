@@ -15,9 +15,20 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
+            $table->string('slug')->unique()->nullable();
             $table->integer('priority');
+            $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
             $table->timestamps();
+            
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->index(['parent_id', 'is_active']);
         });
     }
 

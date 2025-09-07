@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->string('status')->default('pending');
+            $table->boolean('visible')->default(true);
             $table->timestamps();
         });
     }
