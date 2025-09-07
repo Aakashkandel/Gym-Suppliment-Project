@@ -50,31 +50,44 @@ class OrderController extends Controller
             $od = Order::create($data);
 
             $cart_ids = json_decode($od->cart_ids);
-            foreach ($cart_ids as $cart_id) {
-                $cart = Cart::find($cart_id);
-                $cart->visible = 0;
-                $cart->save();
-                $product = Product::find($cart->product_id);
-                $stock = $product->stock - $cart->quantity;
-                if ($stock < 0) {
-                    $stock = 0;
+            if ($cart_ids && is_array($cart_ids)) {
+                foreach ($cart_ids as $cart_id) {
+                    $cart = Cart::find($cart_id);
+                    
+                    if ($cart) {
+                        $cart->visible = 0;
+                        $cart->save();
+                        
+                        $product = Product::find($cart->product_id);
+                        if ($product) {
+                            $stock = $product->stock - $cart->quantity;
+                            if ($stock < 0) {
+                                $stock = 0;
+                            }
+                            $product->stock = $stock;
+                            $product->save();
+                        }
+                    }
                 }
-                $product->stock = $stock;
-                $product->save();
             }
             return redirect()->route('user.orderhistory')->with('success', 'Order placed successfully');
 
         } else {
-            $order = Order::create($data);
+            // Store order data in session instead of creating order immediately
+            session(['pending_order_data' => $data]);
 
             try {
                 $product_code = 'EPAYTEST';
                 $amount = $request->price;
                 $tax_amount = 0;
-                $total_amount = $amount + $tax_amount;
+                $service_charge = 0;
+                $delivery_charge = 0;
+                $total_amount = $amount + $tax_amount + $service_charge + $delivery_charge;
                 $success_url = route('esewa.success');
                 $failure_url = route('esewa.fail');
-                $transaction_uuid = $order->id . '-' . time();
+                // Use timestamp as temporary ID since we haven't created order yet
+                $temp_id = time();
+                $transaction_uuid = $temp_id . '-' . $user_id;
                 $signed_field_names = 'total_amount,transaction_uuid,product_code';
                 $secret_key = '8gBm/:&EnhH.1/q';
 
@@ -86,6 +99,8 @@ class OrderController extends Controller
                     'product_code' => $product_code,
                     'amount' => $amount,
                     'tax_amount' => $tax_amount,
+                    'service_charge' => $service_charge,
+                    'delivery_charge' => $delivery_charge,
                     'total_amount' => $total_amount,
                     'success_url' => $success_url,
                     'failure_url' => $failure_url,
@@ -102,8 +117,10 @@ class OrderController extends Controller
                         '<input type="hidden" name="total_amount" value="' . $total_amount . '">' .
                         '<input type="hidden" name="transaction_uuid" value="' . $transaction_uuid . '">' .
                         '<input type="hidden" name="product_code" value="' . $product_code . '">' .
-                        '<input type="hidden" name="product_service_charge" value="0">' .
-                        '<input type="hidden" name="product_delivery_charge" value="0">' .
+                        '<input type="hidden" name="product_service_charge" value="' . $service_charge . '">' .
+                        '<input type="hidden" name="product_delivery_charge" value="' . $delivery_charge . '">' .
+                        '<input type="hidden" name="esewa_service_charge" value="0">' .
+                        '<input type="hidden" name="merchant_service_fee" value="0">' .
                         '<input type="hidden" name="success_url" value="' . $success_url . '">' .
                         '<input type="hidden" name="failure_url" value="' . $failure_url . '">' .
                         '<input type="hidden" name="signed_field_names" value="' . $signed_field_names . '">' .
@@ -135,44 +152,73 @@ class OrderController extends Controller
     }
 
     public function orderproduct($id)
-
     {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return redirect()->route('user.orderhistory')->with('error', 'Order not found');
+        }
+
+        // Ensure the order belongs to the authenticated user
+        if (auth()->check() && $order->user_id !== auth()->user()->id) {
+            return redirect()->route('user.orderhistory')->with('error', 'Unauthorized access to order');
+        }
+
+        $cart_ids = json_decode($order->cart_ids);
         
-    $order = Order::find($id);
+        if (!$cart_ids || !is_array($cart_ids)) {
+            return redirect()->route('user.orderhistory')->with('error', 'No items found in this order');
+        }
 
-    if (!$order) {
-        return redirect()->route('user.orderhistory')->with('error', 'Order not found');
-    }
+        // Get cart items with product information
+        $cart_items = Cart::with('product')
+            ->whereIn('id', $cart_ids)
+            ->get();
 
-    
-    $cart_ids = json_decode($order->cart_ids);
+        if ($cart_items->isEmpty()) {
+            return redirect()->route('user.orderhistory')->with('error', 'Order items not found');
+        }
 
-    
-    $cart_items = Cart::whereIn('id', $cart_ids)->get();
+        // Calculate order summary
+        $orderSummary = [
+            'total_items' => $cart_items->sum('quantity'),
+            'total_products' => $cart_items->count(),
+            'total_amount' => $cart_items->sum(function($item) {
+                return $item->quantity * $item->price;
+            })
+        ];
 
-
-
-   
-
-
-    return view('user.orderproduct', compact('cart_items'));
-        
-
-        
+        return view('user.orderproduct', compact('cart_items', 'order', 'orderSummary'));
     }
 
     public function cancleorder($id){
             
             $order = Order::find($id);
-            $cart_ids = json_decode($order->cart_ids);
-            foreach ($cart_ids as $cart_id) {
-                $cart = Cart::find($cart_id);
-                $cart->visible = 0;
-                $productstock=$cart->product->stock + $cart->quantity;
-                $cart->product->stock=$productstock;
-                $cart->product->save();
-                $cart->delete();
+            
+            if (!$order) {
+                return redirect()->route('user.orderhistory')->with('fail', 'Order not found');
             }
+            
+            $cart_ids = json_decode($order->cart_ids);
+            
+            if ($cart_ids && is_array($cart_ids)) {
+                foreach ($cart_ids as $cart_id) {
+                    $cart = Cart::find($cart_id);
+                    
+                    if ($cart) {
+                        // Restore product stock
+                        if ($cart->product) {
+                            $productstock = $cart->product->stock + $cart->quantity;
+                            $cart->product->stock = $productstock;
+                            $cart->product->save();
+                        }
+                        
+                        // Delete the cart item
+                        $cart->delete();
+                    }
+                }
+            }
+            
             $order->delete();
             return redirect()->route('user.orderhistory')->with('success', 'Order cancelled successfully');
             
@@ -181,16 +227,26 @@ class OrderController extends Controller
 
     public function deleteorder($id)
     {
-
         $order = Order::find($id);
-        $cart_ids = json_decode($order->cart_ids);
-        foreach ($cart_ids as $cart_id) {
-            $cart = Cart::find($cart_id);
-            $cart->delete();
+        
+        if (!$order) {
+            return redirect()->route('user.orderhistory')->with('fail', 'Order not found');
         }
+        
+        $cart_ids = json_decode($order->cart_ids);
+        
+        if ($cart_ids && is_array($cart_ids)) {
+            foreach ($cart_ids as $cart_id) {
+                $cart = Cart::find($cart_id);
+                
+                if ($cart) {
+                    $cart->delete();
+                }
+            }
+        }
+        
         $order->delete();
-        return redirect()->route('user.orderhistory')->with('success', 'Order cancelled successfully');
-
+        return redirect()->route('user.orderhistory')->with('success', 'Order deleted successfully');
     }
 
 

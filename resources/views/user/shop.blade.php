@@ -158,7 +158,7 @@
                          alt="{{$product->name}}">
                     <div class="absolute top-3 right-3">
                         <span class="price-tag text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                            ₹{{number_format($product->price)}}
+                            Rs {{number_format($product->price)}}
                         </span>
                     </div>
                 </div>

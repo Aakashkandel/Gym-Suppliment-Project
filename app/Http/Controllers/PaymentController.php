@@ -39,42 +39,55 @@ class PaymentController extends Controller
         //     return response()->json(['error' => 'Invalid signature'], 400);
         // }
 
-        list($extracted_id, $extracted_timestamp) = explode('-', $transaction_uuid);
+        list($temp_id, $user_id) = explode('-', $transaction_uuid);
 
-        $order = Order::where('id', $extracted_id)->first();
-        if (!$order) {
-            return redirect()->route('esewa.fail')->with('error', 'Order not found');
+        // Get order data from session
+        $order_data = session('pending_order_data');
+        if (!$order_data) {
+            return redirect()->route('esewa.fail')->with('error', 'Order data not found');
         }
 
         if ($status !== 'COMPLETE') {
+            // Clear session data on failed payment
+            session()->forget('pending_order_data');
             return redirect()->route('esewa.fail')->with('error', 'Payment not completed');
         }
 
-        $order->status = $status;
-        $order->payment_status = 'paid';
-        $order->save();
+        // Create order only after successful payment
+        $order_data['status'] = 'completed';
+        $order_data['payment_status'] = 'paid';
+        $order = Order::create($order_data);
+
+        // Clear session data after successful order creation
+        session()->forget('pending_order_data');
 
         $cart_ids = json_decode($order->cart_ids);
-        foreach ($cart_ids as $cart_id) {
-            $cart = Cart::find($cart_id);
-           $cart->status = 'paid';
-           $cart->visible = 0;
-            $cart->save();
-            $product=Product::find($cart->product_id);
-            $stock=$product->stock-$cart->quantity;
-            if($stock<0)
-            {
-                $stock=0;
+        if ($cart_ids && is_array($cart_ids)) {
+            foreach ($cart_ids as $cart_id) {
+                $cart = Cart::find($cart_id);
+                
+                if ($cart) {
+                    $cart->status = 'paid';
+                    $cart->visible = 0;
+                    $cart->save();
+                    
+                    $product = Product::find($cart->product_id);
+                    if ($product) {
+                        $stock = $product->stock - $cart->quantity;
+                        if ($stock < 0) {
+                            $stock = 0;
+                        }
+                        $product->stock = $stock;
+                        $product->save();
+                    }
+                }
             }
-            $product->stock=$stock;
-            $product->save();
-            
         }
 
         
 
         $paymentdata = [
-            'order_id' => $extracted_id,
+            'order_id' => $order->id,
             'transaction_id' => $transaction_code,
             'amount' => $total_amount,
             'payment_method' => 'esewa',
@@ -88,7 +101,9 @@ class PaymentController extends Controller
 
     public function esewafail(Request $request)
     {
-        // return redirect()->route('user.index')->with('error', 'Payment failed');
-        echo "Payment failed";
+        // Clear pending order data from session on payment failure
+        session()->forget('pending_order_data');
+        
+        return redirect()->route('user.checkout')->with('error', 'Payment failed. Please try again.');
     }
 }

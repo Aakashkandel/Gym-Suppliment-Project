@@ -64,7 +64,8 @@ class PageController extends Controller
 
     public function checkout()
     {
-
+        // Clear any previous pending order data when user visits checkout
+        session()->forget('pending_order_data');
 
         $user = auth()->user()->id;
 

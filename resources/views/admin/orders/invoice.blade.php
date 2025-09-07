@@ -281,8 +281,8 @@
                             @endif
                         </td>
                         <td class="text-center">{{ $item['quantity'] ?? $item->quantity ?? 1 }}</td>
-                        <td class="text-end">₹{{ number_format($item['price'] ?? $item->unit_price ?? 0, 2) }}</td>
-                        <td class="text-end">₹{{ number_format($itemTotal, 2) }}</td>
+                        <td class="text-end">Rs {{ number_format($item['price'] ?? $item->unit_price ?? 0, 2) }}</td>
+                        <td class="text-end">Rs {{ number_format($itemTotal, 2) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -294,29 +294,29 @@
                     <div class="total-section">
                         <div class="total-row">
                             <span>Subtotal:</span>
-                            <span>₹{{ number_format($subtotal, 2) }}</span>
+                            <span>Rs {{ number_format($subtotal, 2) }}</span>
                         </div>
                         @if(isset($order->shipping_charge) && $order->shipping_charge > 0)
                         <div class="total-row">
                             <span>Shipping:</span>
-                            <span>₹{{ number_format($order->shipping_charge, 2) }}</span>
+                            <span>Rs {{ number_format($order->shipping_charge, 2) }}</span>
                         </div>
                         @endif
                         @if(isset($order->tax_amount) && $order->tax_amount > 0)
                         <div class="total-row">
                             <span>Tax (GST):</span>
-                            <span>₹{{ number_format($order->tax_amount, 2) }}</span>
+                            <span>Rs {{ number_format($order->tax_amount, 2) }}</span>
                         </div>
                         @endif
                         @if(isset($order->discount_amount) && $order->discount_amount > 0)
                         <div class="total-row">
                             <span>Discount:</span>
-                            <span class="text-success">-₹{{ number_format($order->discount_amount, 2) }}</span>
+                            <span class="text-success">-Rs {{ number_format($order->discount_amount, 2) }}</span>
                         </div>
                         @endif
                         <div class="total-row final">
                             <span>Total Amount:</span>
-                            <span>₹{{ number_format($order->total_amount ?? $subtotal, 2) }}</span>
+                            <span>Rs {{ number_format($order->total_amount ?? $subtotal, 2) }}</span>
                         </div>
                     </div>
                 </div>

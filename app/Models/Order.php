@@ -51,6 +51,34 @@ class Order extends Model
     }
 
     /**
+     * Get total items count in the order.
+     */
+    public function getItemsAttribute()
+    {
+        if ($this->cart_ids) {
+            $cart_ids = is_array($this->cart_ids) ? $this->cart_ids : json_decode($this->cart_ids, true);
+            if ($cart_ids && is_array($cart_ids)) {
+                return Cart::whereIn('id', $cart_ids)->sum('quantity');
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Get total products count (unique products) in the order.
+     */
+    public function getProductsCountAttribute()
+    {
+        if ($this->cart_ids) {
+            $cart_ids = is_array($this->cart_ids) ? $this->cart_ids : json_decode($this->cart_ids, true);
+            if ($cart_ids && is_array($cart_ids)) {
+                return Cart::whereIn('id', $cart_ids)->count();
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Scope for pending orders.
      */
     public function scopePending($query)
