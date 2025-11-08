@@ -153,7 +153,7 @@
             <div class="product-card bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl">
                 <!-- Product Image -->
                 <div class="relative overflow-hidden">
-                    <img src="{{asset('images/product/'.$product->image)}}" 
+                    <img src="{{asset('images/'.$product->image)}}" 
                          class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 hover:scale-110" 
                          alt="{{$product->name}}">
                     <div class="absolute top-3 right-3">

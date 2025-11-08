@@ -28,7 +28,7 @@
         <!-- Product Details Card -->
         <div class="flex flex-col lg:flex-row bg-white shadow-2xl rounded-2xl overflow-hidden border border-emerald-100">
             <div class="lg:w-1/2 relative group">
-                <img class="object-cover w-full h-full md:h-full transition-transform duration-300 group-hover:scale-105" src="{{ asset('images/product/'.$product->image) }}" alt="{{ $product->name }}">
+                <img class="object-cover w-full h-full md:h-full transition-transform duration-300 group-hover:scale-105" src="{{ asset('images/'.$product->image) }}" alt="{{ $product->name }}">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             <div class="lg:w-1/2 p-8 flex flex-col justify-between">

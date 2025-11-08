@@ -376,6 +376,54 @@ class AdminController extends Controller
         ));
     }
 
+    public function createCustomer()
+    {
+        return view('admin.customers.create');
+    }
+
+    public function editCustomer($id)
+    {
+        $customer = User::where('role', 'user')->findOrFail($id);
+        return view('admin.customers.edit', compact('customer'));
+    }   
+
+    public function updateCustomer(Request $request, $id)
+    {
+        $customer = User::where('role', 'user')->findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $customer->id,
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        $customer->name = $request->name;
+        $customer->email = $request->email;
+        if ($request->password) {
+            $customer->password = bcrypt($request->password);
+        }
+        $customer->save();
+
+        return redirect()->route('admin.customers.index')->with('success', 'Customer updated successfully');
+    }
+
+    public function storeCustomer(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $customer = new User();
+        $customer->name = $request->name;
+        $customer->email = $request->email;
+        $customer->password = bcrypt($request->password);
+        $customer->role = 'user';
+        $customer->save();
+
+        return redirect()->route('admin.customers.index')->with('success', 'Customer created successfully');
+    }
     public function deleteCustomer($id)
     {
         $customer = User::where('role', 'user')->findOrFail($id);
@@ -395,22 +443,7 @@ class AdminController extends Controller
         return response()->json(['success' => true, 'message' => 'Email sent successfully']);
     }
 
-    public function addCustomerNote(Request $request, $id)
-    {
-        $customer = User::where('role', 'user')->findOrFail($id);
-        
-        $notes = $customer->notes ?? [];
-        $notes[] = [
-            'content' => $request->content,
-            'created_at' => now()->format('M d, Y h:i A'),
-            'created_by' => auth()->user()->name ?? 'Admin'
-        ];
-        
-        $customer->notes = $notes;
-        $customer->save();
-        
-        return response()->json(['success' => true, 'message' => 'Note added successfully']);
-    }
+   
 
     public function updateOrderStatus(Request $request, $id)
     {

@@ -193,65 +193,7 @@
             </div>
         </div>
 
-        <!-- Customer Analytics -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Customer Acquisition -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Customer Acquisition</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">New Customers</span>
-                        <span class="font-bold text-green-600">+{{ $newCustomers }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Returning Customers</span>
-                        <span class="font-bold text-blue-600">{{ $returningCustomers }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Customer Retention</span>
-                        <span class="font-bold text-purple-600">{{ number_format($customerRetention, 1) }}%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payment Methods -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Methods</h3>
-                <div class="space-y-3">
-                    @foreach($paymentMethods as $method)
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                            <span class="text-sm text-gray-700">{{ ucfirst($method->payment_method) }}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-sm font-medium text-gray-900">{{ $method->count }}</span>
-                            <span class="text-xs text-gray-500">({{ number_format($method->percentage, 1) }}%)</span>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Order Fulfillment -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Fulfillment</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Avg. Processing Time</span>
-                        <span class="font-bold text-gray-900">{{ $avgProcessingTime }} hours</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Avg. Delivery Time</span>
-                        <span class="font-bold text-gray-900">{{ $avgDeliveryTime }} days</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">On-time Delivery</span>
-                        <span class="font-bold text-green-600">{{ number_format($ontimeDelivery, 1) }}%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
     </div>
 </div>
 
@@ -287,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
-                            return '$' + value.toLocaleString();
+                            return 'Rs' + value.toLocaleString();
                         }
                     }
                 }

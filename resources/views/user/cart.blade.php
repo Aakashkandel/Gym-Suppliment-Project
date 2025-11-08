@@ -45,7 +45,8 @@
                         <div class="flex items-center justify-between p-6 mb-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200 hover:shadow-md transition-all duration-300">
                             <div class="flex items-center flex-1">
                                 <div class="relative">
-                                    <img src="{{asset('/images/product/'.$cart->product->image)}}" alt="{{$cart->product->name}}" class="w-20 h-20 rounded-xl object-cover shadow-md">
+                                    
+                                    <img src="{{asset('images/'.$cart->product->image)}}" alt="{{$cart->product->name}}" class="w-20 h-20 rounded-xl object-cover shadow-md">
                                     <div class="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
                                         {{ $cart->quantity }}
                                     </div>

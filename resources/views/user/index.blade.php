@@ -201,7 +201,8 @@
                 @foreach($bestsellingproducts as $index => $product)
                 <div class="group bg-white shadow-lg rounded-2xl overflow-hidden product-card">
                     <div class="relative overflow-hidden">
-                        <img src="{{asset('images/product/'.$product->image)}}" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
+
+                        <img src="{{asset('images/'.$product->image)}}" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
                         <div class="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-xs font-bold" style="background: linear-gradient(to right, #F39C12, #f4a62a);">
                             #{{$index + 1}} BESTSELLER
                         </div>
@@ -246,7 +247,7 @@
                 @foreach($latestproducts as $product)
                 <div class="group bg-white shadow-lg rounded-2xl overflow-hidden product-card">
                     <div class="relative overflow-hidden">
-                        <img src="{{asset('images/product/'.$product->image)}}" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
+                        <img src="{{asset('images/'.$product->image)}}" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
                         <div class="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-xs font-bold" style="background-color: #2C3E50;">
                             NEW
                         </div>

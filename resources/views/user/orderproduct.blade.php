@@ -172,7 +172,7 @@
             <div class="product-card rounded-xl overflow-hidden">
                 <!-- Product Image -->
                 <div class="relative overflow-hidden">
-                    <img src="{{ asset('images/product/' . $cart->product->image) }}" 
+                    <img src="{{ asset('images/' . $cart->product->image) }}" 
                          class="product-image w-full h-48 object-cover" 
                          alt="{{ $cart->product->name }}">
                     <div class="absolute top-3 right-3">

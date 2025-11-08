@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
-        'name', 
-        'description', 
-        'priority', 
-        'parent_id', 
+        'name',
+        'description',
+        'priority',
+        'parent_id',
         'is_active',
         'image'
     ];
@@ -21,7 +21,7 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean'
     ];
-    
+
     /**
      * Get the products for the category.
      */
@@ -42,6 +42,14 @@ class Category extends Model
      * Get the subcategories.
      */
     public function subcategories()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Get the children categories (alias for subcategories).
+     */
+    public function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
@@ -77,12 +85,12 @@ class Category extends Model
     {
         $breadcrumb = [];
         $category = $this;
-        
+
         while ($category) {
             array_unshift($breadcrumb, $category->name);
             $category = $category->parent;
         }
-        
+
         return implode(' > ', $breadcrumb);
     }
 }

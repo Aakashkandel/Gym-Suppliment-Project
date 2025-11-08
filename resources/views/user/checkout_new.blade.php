@@ -264,6 +264,7 @@
                                 <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                                     @if($cart->product->image)
                                         <img src="{{ asset('images/' . $cart->product->image) }}" 
+                                        
                                              alt="{{ $cart->product->name }}" 
                                              class="w-full h-full object-cover">
                                     @else

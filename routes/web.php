@@ -30,7 +30,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'isadmin', 'verified'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    
+
     // Category management
     Route::get('/category', [CategoryController::class, 'index'])->name('admin.category.index');
     Route::get('/category/create', [CategoryController::class, 'create'])->name('admin.category.create');
@@ -60,10 +60,14 @@ Route::middleware(['auth', 'isadmin', 'verified'])->group(function () {
 
     // User management
     Route::get('/user', [AdminController::class, 'user'])->name('admin.user');
-    
+
     // Customer management
     Route::get('/customers', [AdminController::class, 'customers'])->name('admin.customers.index');
+    Route::get('/customers/create', [AdminController::class, 'createCustomer'])->name('admin.customers.create');
+    Route::post('/customers', [AdminController::class, 'storeCustomer'])->name('admin.customers.store');
     Route::get('/customers/{id}', [AdminController::class, 'showCustomer'])->name('admin.customers.show');
+    Route::get('/customers/{id}/edit', [AdminController::class, 'editCustomer'])->name('admin.customers.edit');
+    Route::put('/customers/{id}', [AdminController::class, 'updateCustomer'])->name('admin.customers.update');
     Route::delete('/customers/{id}', [AdminController::class, 'deleteCustomer'])->name('admin.customers.delete');
     Route::post('/customers/{id}/send-email', [AdminController::class, 'sendCustomerEmail'])->name('admin.customers.email');
     Route::post('/customers/{id}/notes', [AdminController::class, 'addCustomerNote'])->name('admin.customers.notes');
@@ -71,22 +75,22 @@ Route::middleware(['auth', 'isadmin', 'verified'])->group(function () {
     // Analytics
     Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
     Route::get('/analytics/sales', [AdminController::class, 'salesAnalytics'])->name('admin.analytics.sales');
-    
+
     // Stock management
     Route::get('/stock', [AdminController::class, 'stockManagement'])->name('admin.stock.index');
     Route::post('/stock/update/{id}', [AdminController::class, 'updateStock'])->name('admin.stock.update');
-    
+
     // Enhanced Product Management
     Route::get('/products/enhanced', [AdminController::class, 'enhancedProducts'])->name('admin.products.enhanced');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
     Route::get('/products/{id}', [AdminController::class, 'showProduct'])->name('admin.products.show');
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::post('/products/{id}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update.post');
+    Route::put('/products/{id}/update', [AdminController::class, 'updateProduct'])->name('admin.products.update.post');
     Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
-    
+
     // Test API endpoint
     Route::get('/api/test', [AdminController::class, 'testApi'])->name('admin.api.test');
-    
+
     // Invoice Generation
     Route::get('/orders/{id}/invoice', [AdminController::class, 'generateInvoice'])->name('admin.orders.invoice');
 });
@@ -125,7 +129,7 @@ Route::middleware(['auth', 'isuser', 'verified'])->group(function () {
     //order routes
     Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
 
-    //payment routes    
+    //payment routes
     Route::get('/payment/esewa/success', [PaymentController::class, 'esewasuccess'])->name('esewa.success');
     Route::get('/payment/esewa/fail', [PaymentController::class, 'esewafail'])->name('esewa.fail');
     Route::post('/payment/cod', [PaymentController::class, 'codPayment'])->name('payment.cod');
@@ -136,7 +140,7 @@ Route::middleware(['auth', 'isuser', 'verified'])->group(function () {
     Route::get('/orderproduct/{id}',[OrderController::class,'orderproduct'])->name('user.orderproduct');
     Route::get('/deleteorder/{id}',[OrderController::class,'deleteorder'])->name('user.deleteorder');
 
-   
+
 });
 Route::get('/categorysearch/{id}', [PageController::class, 'categorysearch'])->name('user.categorysearch');
 Route::get('/search', [PageController::class, 'search'])->name('user.search');
@@ -148,8 +152,6 @@ Route::get('/aboutus',[PageController::class,'aboutus'])->name('user.aboutus');
 //visitor routes and able to access by all
 Route::get('/', [PageController::class, 'index'])->name('user.index');
 Route::get('/shop', [PageController::class, 'shop'])->name('user.shop');
-
-
 
 
 

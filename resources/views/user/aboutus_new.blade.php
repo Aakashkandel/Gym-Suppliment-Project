@@ -222,7 +222,7 @@
                 <div class="team-card rounded-2xl p-8 text-center">
                     <div class="relative mb-6">
                         <img class="w-40 h-40 rounded-full mx-auto object-cover shadow-lg" 
-                             src="{{ asset('clientimage/ishika.jpg') }}" 
+                             src="{{ asset('clientimage/image.png') }}" 
                              alt="Ishika Sigdel" />
                         <div class="absolute -bottom-2 -right-2 w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
                              style="background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));">
@@ -232,12 +232,12 @@
                     
                     <div class="space-y-4">
                         <div>
-                            <h3 class="text-2xl font-bold" style="color: var(--primary-color);">Ishika Sigdel</h3>
+                            <h3 class="text-2xl font-bold" style="color: var(--primary-color);">Aakash Kandel</h3>
                             <p class="text-lg font-semibold" style="color: var(--secondary-color);">Co-Founder & CEO</p>
                         </div>
                         
                         <p class="text-gray-700 leading-relaxed">
-                            Co-founder of Aakash Gym Supplement, Ishika is passionate about providing high-quality fitness supplements and helping people achieve their fitness goals. With years of experience in the fitness industry, she ensures every product meets our quality standards.
+                            Co-founder of Aakash Gym Supplement, Aakash is passionate about providing high-quality fitness supplements and helping people achieve their fitness goals. With years of experience in the fitness industry, she ensures every product meets our quality standards.
                         </p>
                         
                         <div class="pt-4">

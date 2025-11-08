@@ -37,8 +37,9 @@
                     <p class="text-red-500 mt-2">{{ $message }}</p>
                     @enderror
                     @if ($product->image)
-                    <img src="{{ asset('images/product/' . $product->image) }}" alt="{{ $product->name }}" class="mt-2 w-32 h-32">
+                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="mt-2 w-32 h-32">
                     @endif
+                    
                 </div>
 
                 <div class="mb-4">
