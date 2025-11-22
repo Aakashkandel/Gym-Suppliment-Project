@@ -165,7 +165,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 text-end">
-                    <h4 class="mb-1">Aakash Gym Supplement</h4>
+                    <h4 class="mb-1">Aakash Gym Supplements</h4>
                     <p class="mb-0 opacity-75">Gym Supplement Store</p>
                     <p class="mb-0 opacity-75">📧 info@aakashgymsupplement.com</p>
                     <p class="mb-0 opacity-75">📞 +91 9876543210</p>

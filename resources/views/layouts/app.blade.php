@@ -54,7 +54,7 @@
         <div class="min-h-screen flex flex-row bg-green-500">
             <div class="flex flex-col w-56 bg-green-800 overflow-hidden">
                 <div style=" padding: 20px; text-align: center; font-family: Arial, sans-serif; color: white; font-size: 24px; border-bottom: 4px solid white;">
-                    <h1 style="margin: 0; font-weight: bold; ">Aakash Gym<span class="text-yellow-500"> Supplement</span></h1>
+                    <h1 style="margin: 0; font-weight: bold; ">Aakash Gym <span class="text-yellow-500">Supplements</span></h1>
                 </div>
 
                 <ul class="flex flex-col py-4">

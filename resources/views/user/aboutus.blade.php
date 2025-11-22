@@ -127,7 +127,7 @@
                         </div>
                         
                         <p class="text-gray-700 text-lg leading-relaxed">
-                            Welcome to Aakash Gym Supplement, your go-to platform for high-quality gym supplements and fitness products. Our mission is to help fitness enthusiasts achieve their goals with premium supplements that meet the highest standards of quality and effectiveness.
+                            Welcome to Aakash Gym Supplements, your go-to platform for high-quality gym supplements and fitness products. Our mission is to help fitness enthusiasts achieve their goals with premium supplements that meet the highest standards of quality and effectiveness.
                         </p>
                         
                         <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-6 rounded-xl border-l-4" style="border-color: var(--secondary-color);">
@@ -237,7 +237,7 @@
                         </div>
                         
                         <p class="text-gray-700 leading-relaxed">
-                            Co-founder of Aakash Gym Supplement, Aakash is passionate about providing high-quality fitness supplements and helping people achieve their fitness goals. With years of experience in the fitness industry, she ensures every product meets our quality standards.
+                            Co-founder of Aakash Gym Supplements, Aakash is passionate about providing high-quality fitness supplements and helping people achieve their fitness goals. With years of experience in the fitness industry, she ensures every product meets our quality standards.
                         </p>
                         
                         <div class="pt-4">

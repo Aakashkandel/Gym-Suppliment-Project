@@ -24,7 +24,7 @@
                 <div class="absolute inset-0 flex items-center justify-center p-8">
                     <div class="text-center text-white">
                         <div class="text-5xl font-bold mb-4">
-                            Join <span class="text-teal-200">Aakash Gym</span>
+                            Join <span class="text-teal-200">Aakash Gym Supplements</span>
                         </div>
                         <p class="text-xl opacity-90 mb-6">Start your fitness journey with us</p>
                         <div class="grid grid-cols-1 gap-4 text-teal-200">

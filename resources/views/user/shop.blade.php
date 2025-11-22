@@ -129,9 +129,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
             @foreach($products as $product)
             <div class="product-card bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl p-4">
-                <a href="{{ route('user.productdetails', $product->id) }}" class="block">
                     <img src="{{ $product->main_image ?? asset('images/default-product.jpg') }}" alt="{{ $product->name }}" class="w-full h-48 object-contain bg-gray-100 rounded-lg">
-                </a>
+                
 
                 <h3 class="mt-3 font-semibold text-lg" style="color: var(--primary-color);">{{ $product->name }}</h3>
                 <p class="text-gray-600">Rs. {{ number_format($product->price) }}</p>

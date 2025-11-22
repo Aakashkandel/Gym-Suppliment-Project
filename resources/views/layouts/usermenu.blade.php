@@ -107,6 +107,14 @@
 
         .mobile-menu {
             display: none !important;
+            position: absolute !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: 100% !important;
+            background: rgba(255,255,255,0.98) !important;
+            box-shadow: 0 8px 30px rgba(22,30,44,0.12) !important;
+            z-index: 60 !important;
+            padding: 1rem !important;
         }
 
         .mobile-menu.active {
@@ -128,9 +136,15 @@
             .desktop-nav {
                 display: none !important;
             }
-            
             .mobile-toggle {
                 display: block !important;
+            }
+            /* Make mobile nav links full width */
+            .mobile-menu .nav-link {
+                display: block !important;
+                width: 100% !important;
+                padding: 0.75rem 1rem !important;
+                border-radius: 0.5rem !important;
             }
         }
 
@@ -192,9 +206,10 @@
             <div class="flex justify-between items-center">
                 <!-- Brand Logo -->
                 <div class="flex items-center">
-                    <a href="{{route('user.index')}}" class="brand-logo flex items-center">
+                    <a href="{{route('user.index')}}" class="brand-logo flex items-center text-lg md:text-xl">
                         <i class="fas fa-dumbbell mr-2 text-emerald-600"></i>
-                        Aakash Gym <span class="text-teal-600">Supplements</span>
+                        <span class="uppercase font-extrabold">AG</span>
+                        <span class="ml-2 font-semibold text-sm text-gray-700">Supplement</span>
                     </a>
                 </div>
 
@@ -257,14 +272,14 @@
                     @endauth
 
                     <!-- Mobile Menu Toggle -->
-                    <button class="mobile-toggle text-gray-600 hover:text-emerald-600 p-2" onclick="toggleMobileMenu()">
+                    <button class="mobile-toggle text-gray-600 hover:text-emerald-600 p-2" type="button" aria-label="Toggle navigation" onclick="toggleMobileMenu()">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Mobile Menu -->
-            <div class="mobile-menu mt-4 pb-4" id="mobileMenu">
+            <div class="mobile-menu mt-2 pb-4 rounded-lg" id="mobileMenu" aria-hidden="true">
                 <div class="flex flex-col space-y-2">
                     <a href="{{route('user.index')}}" class="nav-link">
                         <i class="fas fa-home mr-2"></i>Home
@@ -272,15 +287,31 @@
                     <a href="{{route('user.shop')}}" class="nav-link">
                         <i class="fas fa-store mr-2"></i>Shop
                     </a>
+
                     @auth
                     <a href="{{route('user.orderhistory')}}" class="nav-link">
                         <i class="fas fa-history mr-2"></i>Order History
                     </a>
+
+                    <a href="{{route('user.cart')}}" class="nav-link flex items-center justify-between">
+                        <span><i class="fas fa-shopping-cart mr-2"></i>Cart</span>
+                        @if(session('cart') && count(session('cart')) > 0)
+                        <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2">{{ count(session('cart')) }}</span>
+                        @endif
+                    </a>
+
+                    <form action="{{route('logout')}}" method="post" class="mt-2 w-full">
+                        @csrf
+                        <button type="submit" class="nav-btn nav-btn-secondary w-full justify-center">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </form>
                     @endauth
+
                     <a href="{{route('user.aboutus')}}" class="nav-link">
                         <i class="fas fa-info-circle mr-2"></i>About Us
                     </a>
-                    
+
                     @guest
                     <div class="pt-4 border-t border-gray-200 mt-4">
                         <a href="/register" class="nav-btn nav-btn-secondary w-full mb-2 justify-center">
@@ -309,7 +340,7 @@
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center mb-6">
                         <i class="fas fa-dumbbell mr-2 text-2xl" style="color: #F39C12;"></i>
-                        <h3 class="text-2xl font-bold">Aakash Gym <span style="color: #F39C12;">Supplements</span></h3>
+                        <h3 class="text-2xl font-bold">AG <span style="color: #F39C12;">Supplement</span></h3>
                     </div>
                     <p class="text-gray-400 mb-4 max-w-md">
                         Your trusted partner in fitness nutrition. We provide premium quality supplements to help you achieve your fitness goals and build your best physique.
@@ -363,9 +394,9 @@
                 </div>
             </div>
 
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <div class="border-t border-gray-800 mt-8 pt-8 text-center">
                 <p class="text-gray-400">
-                    &copy; 2024 Aakash Gym Supplements. All rights reserved. | 
+                    &copy; 2024 AG Supplement. All rights reserved. | 
                     <a href="#" class="transition-colors" style="color: #F39C12;" onmouseover="this.style.opacity='0.8';" onmouseout="this.style.opacity='1';">Privacy Policy</a> | 
                     <a href="#" class="transition-colors" style="color: #F39C12;" onmouseover="this.style.opacity='0.8';" onmouseout="this.style.opacity='1';">Terms of Service</a>
                 </p>
@@ -378,7 +409,9 @@
         // Mobile menu toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('active');
+            if (!menu) return;
+            const isActive = menu.classList.toggle('active');
+            menu.setAttribute('aria-hidden', !isActive);
         }
 
         // Navbar scroll effect
@@ -391,13 +424,23 @@
             }
         });
 
-        // Close mobile menu when clicking outside
+        // Close mobile menu when clicking outside or when a mobile link is clicked
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('mobileMenu');
             const toggle = document.querySelector('.mobile-toggle');
-            
-            if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+            if (!menu) return;
+
+            // If clicked a link inside the mobile menu, close it
+            if (menu.contains(event.target) && event.target.closest('.nav-link')) {
                 menu.classList.remove('active');
+                menu.setAttribute('aria-hidden', 'true');
+                return;
+            }
+
+            // If clicked outside both menu and toggle, close the menu
+            if (toggle && !menu.contains(event.target) && !toggle.contains(event.target)) {
+                menu.classList.remove('active');
+                menu.setAttribute('aria-hidden', 'true');
             }
         });
 
