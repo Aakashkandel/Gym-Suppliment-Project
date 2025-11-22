@@ -108,7 +108,7 @@
             <div class="flex flex-col lg:flex-row items-center gap-12 mb-16">
                 <div class="lg:w-1/2">
                     <div class="relative">
-                        <img src="{{ asset('clientimage/aboutus.jpg') }}" 
+                        <img src="{{ asset('clientimage/gym3.webp') }}" 
                              alt="About Aakash Gym Supplements" 
                              class="w-full h-auto rounded-2xl shadow-2xl">
                         <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl opacity-80"></div>

@@ -21,6 +21,7 @@
             --primary-color: #2C3E50 !important;
             --primary-light: #34495e !important;
             --primary-dark: #1a252f !important;
+            --dark-bg: #161e2c !important;
             --secondary-color: #F39C12 !important;
             --secondary-light: #f4a62a !important;
             --secondary-dark: #d68910 !important;
@@ -132,6 +133,21 @@
                 display: block !important;
             }
         }
+
+        /* Project-wide dark background helper */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(22,30,44,0.85), rgba(22,30,44,0.45));
+            /* rgba(22,30,44) uses #161e2c */
+        }
+
+        footer {
+            background: var(--dark-bg) !important;
+        }
+        /* Map common Tailwind dark utilities to the project's dark color */
+        .bg-gray-900 { background-color: var(--dark-bg) !important; }
+        .bg-gray-800 { background-color: var(--dark-bg) !important; }
 
         @media (min-width: 769px) {
             .mobile-toggle {

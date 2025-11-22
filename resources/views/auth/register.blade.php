@@ -20,7 +20,7 @@
             <!-- Image Section -->
             <div class="lg:w-1/2 relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-teal-600 to-emerald-600 opacity-90"></div>
-                <img src="{{asset('clientimage/registerimage.jpg')}}" alt="Aakash Gym Supplements Register" class="w-full h-full object-cover">
+                <img src="{{asset('clientimage/gym4.jpg')}}" alt="Aakash Gym Supplements Register" class="w-full h-full object-cover">
                 <div class="absolute inset-0 flex items-center justify-center p-8">
                     <div class="text-center text-white">
                         <div class="text-5xl font-bold mb-4">
@@ -53,7 +53,7 @@
 
             <!-- Form Section -->
             <div class="lg:w-1/2 p-8 lg:p-12 flex items-center justify-center">
-                <div class="w-full max-w-md">
+                <div class="w-full max-w-md relative z-30 pointer-events-auto">
                     <div class="text-center mb-8">
                         <h1 class="text-4xl font-bold text-gray-800 mb-2">Create Account</h1>
                         <p class="text-gray-600 text-lg">Join thousands of fitness enthusiasts using Aakash Gym Supplements</p>
@@ -172,7 +172,7 @@
                         </div>
 
                         <!-- Register Button -->
-                        <button type="submit" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center">
+                        <button type="submit" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-4 rounded-xl transition duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative z-30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 pointer-events-auto cursor-pointer">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                             </svg>

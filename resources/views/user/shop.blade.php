@@ -64,25 +64,25 @@
 </style>
 
 <div class="bg-gray-50 min-h-screen">
-    <!-- Hero Section with Search -->
-    <div class="search-container py-16 px-4">
-        <div class="container mx-auto text-center">
-            <i class="fas fa-dumbbell text-6xl mb-6" style="color: var(--secondary-color);"></i>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: var(--secondary-color);">
+    <section class="relative text-white min-h-[50vh] flex items-center" style="background-image: url('{{ asset('clientimage/gym_herosection.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <div class="hero-overlay"></div>
+
+        <div class="container mx-auto text-center relative z-10 py-16 px-4">
+            <i class="fas fa-dumbbell text-6xl mb-6" style="color: #ffffff;"></i>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #ffffff;">
                 <i class="fas fa-fire mr-3"></i>Premium Gym Supplements
             </h1>
-            <p class="text-xl mb-8" style="color: var(--secondary-color); opacity: 0.9;">
+            <p class="text-xl mb-8" style="color: rgba(255,255,255,0.95);">
                 <i class="fas fa-heartbeat mr-2"></i>Fuel your fitness journey with top-quality supplements
             </p>
-            
-            <!-- Search Form -->
+
             <form action="{{route('user.search')}}" method="get" class="max-w-2xl mx-auto">
                 <div class="relative">
                     <i class="fas fa-search absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
-                    <input type="text" name="search" 
-                           class="w-full py-4 pl-14 pr-32 rounded-full border-0 focus:outline-none focus:ring-4 text-lg shadow-2xl" 
-                           style="focus:ring-color: var(--secondary-color); focus:ring-opacity: 0.5;"
-                           placeholder="Search for protein powder, pre-workout, creatine, vitamins...">
+                          <input type="text" name="search" 
+                              class="w-full py-4 pl-14 pr-32 rounded-full border-0 focus:outline-none focus:ring-4 text-lg shadow-2xl bg-white text-black placeholder-gray-500" 
+                              style="focus:ring-color: var(--secondary-color); focus:ring-opacity: 0.5;"
+                              placeholder="Search for protein powder, pre-workout, creatine, vitamins...">
                     <button type="submit" 
                             class="search-btn absolute right-2 top-2 py-2 px-6 rounded-full font-semibold transition-all duration-300 shadow-lg">
                         <i class="fas fa-search mr-2"></i>Search
@@ -90,32 +90,11 @@
                 </div>
             </form>
         </div>
-    </div>
+    </section>
 
-    <!-- Fitness Features Banner -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center border-2" style="border-color: var(--secondary-color);">
-                <i class="fas fa-shipping-fast text-4xl mb-4" style="color: var(--primary-color);"></i>
-                <h3 class="text-xl font-bold mb-2" style="color: var(--primary-color);">Fast Delivery</h3>
-                <p class="text-gray-600">Quick delivery to fuel your fitness goals</p>
-            </div>
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center border-2" style="border-color: var(--secondary-color);">
-                <i class="fas fa-certificate text-4xl mb-4" style="color: var(--primary-color);"></i>
-                <h3 class="text-xl font-bold mb-2" style="color: var(--primary-color);">Lab Tested</h3>
-                <p class="text-gray-600">Premium supplements tested for purity and potency</p>
-            </div>
-            <div class="bg-white rounded-xl shadow-lg p-6 text-center border-2" style="border-color: var(--secondary-color);">
-                <i class="fas fa-user-md text-4xl mb-4" style="color: var(--primary-color);"></i>
-                <h3 class="text-xl font-bold mb-2" style="color: var(--primary-color);">Expert Advice</h3>
-                <p class="text-gray-600">24/7 support from certified fitness professionals</p>
-            </div>
-        </div>
-    </div>
+    
 
-    <!-- Filters and Content -->
     <div class="container mx-auto px-4 py-8">
-        <!-- Filter Section -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-8 filter-gradient">
             <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
                 <h2 class="text-2xl font-bold flex items-center">
@@ -123,7 +102,6 @@
                 </h2>
 
                 
-                <!-- Category Filter -->
                 <div class="flex flex-col sm:flex-row gap-4 items-center">
                     <label class="font-semibold flex items-center">
                         <i class="fas fa-th-large mr-2"></i>Filter by Category:
@@ -150,54 +128,28 @@
         <!-- Products Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
             @foreach($products as $product)
-            <div class="product-card bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl">
-                <!-- Product Image -->
-                <div class="relative overflow-hidden">
-                    <img src="{{asset('images/'.$product->image)}}" 
-                         class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 hover:scale-110" 
-                         alt="{{$product->name}}">
-                    <div class="absolute top-3 right-3">
-                        <span class="price-tag text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                            Rs {{number_format($product->price)}}
-                        </span>
-                    </div>
-                </div>
-                
-                <!-- Product Info -->
-                <div class="p-4 sm:p-5">
-                    <h3 class="text-lg sm:text-xl font-bold mb-2 line-clamp-2" style="color: var(--primary-color);">
-                        <i class="fas fa-dumbbell mr-2 text-sm" style="color: var(--secondary-color); background: var(--primary-color); padding: 4px; border-radius: 50%;"></i>
-                        {{$product->name}}
-                    </h3>
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                        @if(stripos($product->name, 'protein') !== false)
-                            <i class="fas fa-fire mr-1"></i>Premium protein powder for muscle growth and recovery
-                        @elseif(stripos($product->name, 'pre-workout') !== false || stripos($product->name, 'preworkout') !== false)
-                            <i class="fas fa-bolt mr-1"></i>High-energy pre-workout formula for maximum performance
-                        @elseif(stripos($product->name, 'creatine') !== false)
-                            <i class="fas fa-muscle mr-1"></i>Pure creatine for strength and explosive power gains
-                        @elseif(stripos($product->name, 'bcaa') !== false || stripos($product->name, 'amino') !== false)
-                            <i class="fas fa-dna mr-1"></i>Essential amino acids for muscle recovery and endurance
-                        @elseif(stripos($product->name, 'vitamin') !== false || stripos($product->name, 'multivitamin') !== false)
-                            <i class="fas fa-pills mr-1"></i>Complete vitamin complex for overall health and wellness
-                        @elseif(stripos($product->name, 'fat') !== false || stripos($product->name, 'burn') !== false)
-                            <i class="fas fa-fire-alt mr-1"></i>Advanced fat burner for lean muscle and weight management
-                        @elseif(stripos($product->name, 'mass') !== false || stripos($product->name, 'gainer') !== false)
-                            <i class="fas fa-chart-line mr-1"></i>High-calorie mass gainer for rapid muscle building
-                        @else
-                            <i class="fas fa-heartbeat mr-1"></i>Premium supplement for enhanced fitness performance
-                        @endif
-                    </p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <a href="{{route('user.productdetails',$product->id)}}" 
-                           class="btn-primary text-center py-2 sm:py-3 px-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg flex-1">
-                            <i class="fas fa-info-circle mr-2"></i>View Details
-                        </a>
-                        <button class="category-filter py-2 sm:py-3 px-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg">
-                            <i class="fas fa-cart-plus"></i>
-                        </button>
-                    </div>
+            <div class="product-card bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl p-4">
+                <a href="{{ route('user.productdetails', $product->id) }}" class="block">
+                    <img src="{{ $product->main_image ?? asset('images/default-product.jpg') }}" alt="{{ $product->name }}" class="w-full h-48 object-contain bg-gray-100 rounded-lg">
+                </a>
+
+                <h3 class="mt-3 font-semibold text-lg" style="color: var(--primary-color);">{{ $product->name }}</h3>
+                <p class="text-gray-600">Rs. {{ number_format($product->price) }}</p>
+
+                <div class="mt-3 grid grid-cols-2 gap-3">
+                    <a href="{{ route('user.productdetails', $product->id) }}" class="text-center px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-100">View Details</a>
+                    @auth
+                    <form method="POST" action="{{ route('productdetails.store') }}" class="m-0">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="price" value="{{ $product->price }}">
+                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                        <button type="submit" class="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-black">Add to Cart</button>
+                    </form>
+                    @else
+                    <a href="{{ route('login') }}" class="w-full inline-block text-center bg-gray-900 text-white py-2 rounded-lg hover:bg-black">Add to Cart</a>
+                    @endauth
                 </div>
             </div>
             @endforeach

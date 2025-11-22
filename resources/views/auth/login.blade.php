@@ -20,7 +20,7 @@
             <!-- Image Section -->
             <div class="lg:w-1/2 relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-emerald-600 to-teal-600 opacity-90"></div>
-                <img src="{{asset('clientimage/kisanlogin.jpg')}}" alt="Aakash Gym Supplements Login" class="w-full h-full object-cover">
+                <img src="{{asset('clientimage/gym4.jpg')}}" alt="Aakash Gym Supplements Login" class="w-full h-full object-cover">
                 <div class="absolute inset-0 flex items-center justify-center p-8">
                     <div class="text-center text-white">
                         <div class="text-5xl font-bold mb-4">
@@ -47,7 +47,7 @@
 
             <!-- Form Section -->
             <div class="lg:w-1/2 p-8 lg:p-12 flex items-center justify-center">
-                <div class="w-full max-w-md">
+                <div class="w-full max-w-md relative z-30 pointer-events-auto">
                     <div class="text-center mb-8">
                         <h1 class="text-4xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
                         <p class="text-gray-600 text-lg">Sign in to your account to continue</p>
@@ -126,7 +126,7 @@
                         </div>
 
                         <!-- Login Button -->
-                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-4 rounded-xl transition duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center">
+                        <button type="submit" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-4 rounded-xl transition duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center relative z-30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 pointer-events-auto cursor-pointer">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
